@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Характеристики эпох — Sprocket</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        :root {
+            --md-bg: #fef7ff;
+            --md-surface: #f7f2fa;
+            --md-surface-variant: #e7e0ec;
+            --md-text: #1d1b20;
+            --md-primary: #6750a4;
+            --md-on-surface-variant: #49454f;
+            --md-outline: #79747e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-bg);
+            color: var(--md-text);
+            padding: 24px;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* Контейнер селекторов */
+        .filters-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .select-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--md-primary);
+        }
+
+        select {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--md-outline);
+            background-color: var(--md-surface);
+            color: var(--md-text);
+            font-size: 16px;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Карточка данных (Material M3 Card) */
+        .info-card {
+            background-color: var(--md-surface);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0px 1px 3px 1px rgba(0,0,0,0.15);
+            display: none; /* Проявляется при загрузке данных */
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--md-primary);
+            margin: 16px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .section-title:first-child {
+                margin-top: 0;
+            }
+
+        /* Стили таблиц внутри разделов */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--md-surface-variant);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .label-cell {
+            color: var(--md-on-surface-variant);
+            width: 55%;
+        }
+
+        .value-cell {
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* Блок примечания */
+        .note-box {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: var(--md-surface-variant);
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--md-on-surface-variant);
+            display: flex;
+            gap: 12px;
+        }
+
+            .note-box .material-icons {
+                color: var(--md-primary);
+                font-size: 20px;
+            }
+    </style>
+</head>
+<body>
+
+    <h1>Спецификации Эпох и Классов</h1>
+
+    <!-- Выпадающие списки выбора -->
+    <div class="filters-container">
+        <div class="select-group">
+            <label for="epochSelect">Эпоха</label>
+            <select id="epochSelect" onchange="updateView()"></select>
+        </div>
+        <div class="select-group">
+            <label for="classSelect">Класс танка</label>
+            <select id="classSelect" onchange="updateView()">
+                <option value="light">Light (Лёгкий)</option>
+                <option value="medium">Medium (Средний)</option>
+                <option value="heavy">Heavy (Тяжёлый)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Основной контейнер вывода спецификаций -->
+    <div id="infoCard" class="info-card">
+
+        <div class="section-title"><span class="material-icons">fitness_center</span> Вес и Мощность</div>
+        <table>
+            <tr>
+                <td class="label-cell">Рекомендуемый вес</td>
+                <td class="value-cell" id="weightVal">-</td>
+            </tr>
+            <tr>
+                <td class="label-cell">Удельная мощность</td>
+                <td class="value-cell" id="powerVal">-</td>
+            </tr>
+        </table>
+
+        <div class="section-title"><span class="material-icons">shield</span> Бронирование корпуса (мм)</div>
+        <table>
+            <tr><td class="label-cell">Лобовая броня</td><td class="value-cell" id="hullFront">-</td></tr>
+            <tr><td class="label-cell">Бортовая броня</td><td class="value-cell" id="hullSide">-</td></tr>
+            <tr><td class="label-cell">Кормовая броня</td><td class="value-cell" id="hullRear">-</td></tr>
+        </table>
+
+        <div class="section-title"><span class="material-icons"> طلع shield</span> Бронирование башни (мм)</div>
+        <table>
+            <tr><td class="label-cell">Лобовая броня башни</td><td class="value-cell" id="turretFront">-</td></tr>
+            <tr><td class="label-cell">Бортовая броня башни</td><td class="value-cell" id="turretSide">-</td></tr>
+            <tr><td class="label-cell">Кормовая броня башни</td><td class="value-cell" id="turretRear">-</td></tr>
+        </table>
+
+        <div class="section-title"><span class="material-icons">colorize</span> Вооружение</div>
+        <table>
+            <tr><td class="label-cell">Калибр орудия</td><td class="value-cell" id="gunCaliber">-</td></tr>
+            <tr><td class="label-cell">Длина каморы</td><td class="value-cell" id="gunChamber">-</td></tr>
+        </table>
+
+    </div>
+
+    <!-- Подсказка из JSON -->
+    <div class="note-box">
+        <span class="material-icons">info</span>
+        <span id="noteText">Загрузка примечания...</span>
+    </div>
+
+    <script>
+        let jsonData = null;
+
+        // 1. Загрузка файла данных
+        async function loadData() {
+            try {
+                // Замените 'data.json' на реальное имя вашего сохраненного JSON-файла
+                const response = await fetch('basedata.json');
+                jsonData = await response.json();
+
+                // Выводим текст нижней заметки
+                document.getElementById('noteText').innerText = jsonData.engine_note;
+
+                // Заполняем выпадающий список эпох динамически из JSON
+                const epochSelect = document.getElementById('epochSelect');
+                jsonData.epochs.forEach(epoch => {
+                    const opt = document.createElement('option');
+                    opt.value = epoch.id;
+                    opt.textContent = epoch.label;
+                    epochSelect.appendChild(opt);
+                });
+
+                document.getElementById('infoCard').style.display = 'block';
+                updateView(); // Первичный рендер данных
+            } catch (e) {
+                console.error("Ошибка загрузки:", e);
+                document.getElementById('noteText').innerText = "Ошибка загрузки JSON-файла.";
+            }
+        }
+
+        // 2. Функция обновления данных на экране при переключении списков
+        function updateView() {
+            if (!jsonData) return;
+
+            const selectedEpochId = document.getElementById('epochSelect').value;
+            const selectedClass = document.getElementById('classSelect').value;
+
+            // Находим нужную эпоху в массиве JSON
+            const epoch = jsonData.epochs.find(e => e.id === selectedEpochId);
+            if (!epoch) return;
+
+            // Извлекаем подобъекты по выбранному классу (light/medium/heavy)
+            const wp = epoch.weight_power[selectedClass];
+            const armor = epoch.armor_mm[selectedClass];
+            const guns = epoch.guns_mm[selectedClass];
+
+            // Заполняем Вес и Мощность
+            document.getElementById('weightVal').innerText = `${wp.weight_t.min} - ${wp.weight_t.max} т`;
+            document.getElementById('powerVal').innerText = `${wp.power_hp_per_t.min} - ${wp.power_hp_per_t.max} л.с./т`;
+
+            // Заполняем Броню корпуса
+            document.getElementById('hullFront').innerText = `${armor.hull.front} мм`;
+            document.getElementById('hullSide').innerText = `${armor.hull.side} мм`;
+            document.getElementById('hullRear').innerText = `${armor.hull.rear} мм`;
+
+            // Проверка брони башни (В Эпохе WW1 башни нет и возвращается null)
+            if (armor.turret) {
+                document.getElementById('turretFront').innerText = `${armor.turret.front} мм`;
+                document.getElementById('turretSide').innerText = `${armor.turret.side} мм`;
+                document.getElementById('turretRear').innerText = `${armor.turret.rear} мм`;
+            } else {
+                document.getElementById('turretFront').innerText = "Отсутствует";
+                document.getElementById('turretSide').innerText = "Отсутствует";
+                document.getElementById('turretRear').innerText = "Отсутствует";
+            }
+
+            // Заполняем характеристики Орудия
+            document.getElementById('gunCaliber').innerText = `${guns.caliber.min} - ${guns.caliber.max} мм`;
+            document.getElementById('gunChamber').innerText = `${guns.chamber_length_mm.min} - ${guns.chamber_length_mm.max} мм`;
+        }
+
+        // Запуск скрипта при загрузке страницы
+        window.onload = loadData;
+    </script>
+</body>
+</html>

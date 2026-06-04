@@ -1,0 +1,100 @@
+{
+  "epochs": [
+    {
+      "id": "ww",
+      "label": "WW1 (Первая мировая)",
+      "weight_power": {
+        "light": { "weight_t": { "min": 3, "max": 8 }, "power_hp_per_t": { "min": 6, "max": 10 } },
+        "medium": { "weight_t": { "min": 12, "max": 20 }, "power_hp_per_t": { "min": 5, "max": 7 } },
+        "heavy": { "weight_t": { "min": 25, "max": 35 }, "power_hp_per_t": { "min": 3, "max": 5 } }
+      },
+      "armor_mm": {
+        "light": { "hull": { "front": 15, "side": 10, "rear": 8 }, "turret": null },
+        "medium": { "hull": { "front": 20, "side": 15, "rear": 12 }, "turret": null },
+        "heavy": { "hull": { "front": 30, "side": 20, "rear": 15 }, "turret": null }
+      },
+      "guns_mm": {
+        "light": { "caliber": { "min": 37, "max": 47 }, "chamber_length_mm": { "min": 100, "max": 150 } },
+        "medium": { "caliber": { "min": 47, "max": 57 }, "chamber_length_mm": { "min": 120, "max": 180 } },
+        "heavy": { "caliber": { "min": 57, "max": 75 }, "chamber_length_mm": { "min": 150, "max": 220 } }
+      }
+    },
+    {
+      "id": "IW",
+      "label": "Interwar (Межвоенный)",
+      "weight_power": {
+        "light": { "weight_t": { "min": 6, "max": 12 }, "power_hp_per_t": { "min": 12, "max": 18 } },
+        "medium": { "weight_t": { "min": 15, "max": 25 }, "power_hp_per_t": { "min": 10, "max": 14 } },
+        "heavy": { "weight_t": { "min": 30, "max": 45 }, "power_hp_per_t": { "min": 8, "max": 11 } }
+      },
+      "armor_mm": {
+        "light": { "hull": { "front": 20, "side": 15, "rear": 10 }, "turret": { "front": 25, "side": 15, "rear": 15 } },
+        "medium": { "hull": { "front": 35, "side": 25, "rear": 15 }, "turret": { "front": 40, "side": 30, "rear": 25 } },
+        "heavy": { "hull": { "front": 60, "side": 40, "rear": 30 }, "turret": { "front": 60, "side": 50, "rear": 40 } }
+      },
+      "guns_mm": {
+        "light": { "caliber": { "min": 20, "max": 37 }, "chamber_length_mm": { "min": 150, "max": 250 } },
+        "medium": { "caliber": { "min": 37, "max": 47 }, "chamber_length_mm": { "min": 200, "max": 350 } },
+        "heavy": { "caliber": { "min": 75, "max": 76.2 }, "chamber_length_mm": { "min": 250, "max": 400 } }
+      }
+    },
+    {
+      "id": "EW",
+      "label": "Earlywar (Ранняя ВМВ)",
+      "weight_power": {
+        "light": { "weight_t": { "min": 10, "max": 15 }, "power_hp_per_t": { "min": 16, "max": 22 } },
+        "medium": { "weight_t": { "min": 20, "max": 30 }, "power_hp_per_t": { "min": 12, "max": 16 } },
+        "heavy": { "weight_t": { "min": 40, "max": 55 }, "power_hp_per_t": { "min": 10, "max": 13 } }
+      },
+      "armor_mm": {
+        "light": { "hull": { "front": 30, "side": 20, "rear": 15 }, "turret": { "front": 35, "side": 25, "rear": 20 } },
+        "medium": { "hull": { "front": 50, "side": 30, "rear": 25 }, "turret": { "front": 60, "side": 40, "rear": 40 } },
+        "heavy": { "hull": { "front": 80, "side": 60, "rear": 50 }, "turret": { "front": 90, "side": 70, "rear": 60 } }
+      },
+      "guns_mm": {
+        "light": { "caliber": { "min": 37, "max": 45 }, "chamber_length_mm": { "min": 300, "max": 450 } },
+        "medium": { "caliber": { "min": 50, "max": 75 }, "chamber_length_mm": { "min": 350, "max": 500 } },
+        "heavy": { "caliber": { "min": 76.2, "max": 88 }, "chamber_length_mm": { "min": 400, "max": 600 } }
+      }
+    },
+    {
+      "id": "MW",
+      "label": "Midwar (Середина ВМВ)",
+      "weight_power": {
+        "light": { "weight_t": { "min": 12, "max": 18 }, "power_hp_per_t": { "min": 20, "max": 26 } },
+        "medium": { "weight_t": { "min": 25, "max": 38 }, "power_hp_per_t": { "min": 14, "max": 18 } },
+        "heavy": { "weight_t": { "min": 45, "max": 65 }, "power_hp_per_t": { "min": 11, "max": 14 } }
+      },
+      "armor_mm": {
+        "light": { "hull": { "front": 40, "side": 25, "rear": 20 }, "turret": { "front": 45, "side": 30, "rear": 25 } },
+        "medium": { "hull": { "front": 75, "side": 45, "rear": 40 }, "turret": { "front": 90, "side": 60, "rear": 50 } },
+        "heavy": { "hull": { "front": 120, "side": 80, "rear": 60 }, "turret": { "front": 150, "side": 100, "rear": 80 } }
+      },
+      "guns_mm": {
+        "light": { "caliber": { "min": 45, "max": 57 }, "chamber_length_mm": { "min": 400, "max": 550 } },
+        "medium": { "caliber": { "min": 75, "max": 76.2 }, "chamber_length_mm": { "min": 500, "max": 700 } },
+        "heavy": { "caliber": { "min": 88, "max": 105 }, "chamber_length_mm": { "min": 600, "max": 850 } }
+      }
+    },
+    {
+      "id": "LW",
+      "label": "Latewar (Конец ВМВ)",
+      "weight_power": {
+        "light": { "weight_t": { "min": 15, "max": 22 }, "power_hp_per_t": { "min": 22, "max": 30 } },
+        "medium": { "weight_t": { "min": 30, "max": 45 }, "power_hp_per_t": { "min": 16, "max": 20 } },
+        "heavy": { "weight_t": { "min": 50, "max": 80 }, "power_hp_per_t": { "min": 12, "max": 16 } }
+      },
+      "armor_mm": {
+        "light": { "hull": { "front": 50, "side": 30, "rear": 25 }, "turret": { "front": 60, "side": 40, "rear": 35 } },
+        "medium": { "hull": { "front": 100, "side": 60, "rear": 50 }, "turret": { "front": 120, "side": 80, "rear": 70 } },
+        "heavy": { "hull": { "front": 150, "side": 100, "rear": 80 }, "turret": { "front": 200, "side": 120, "rear": 100 } }
+      },
+      "guns_mm": {
+        "light": { "caliber": { "min": 57, "max": 75 }, "chamber_length_mm": { "min": 500, "max": 650 } },
+        "medium": { "caliber": { "min": 85, "max": 90 }, "chamber_length_mm": { "min": 650, "max": 850 } },
+        "heavy": { "caliber": { "min": 105, "max": 122 }, "chamber_length_mm": { "min": 800, "max": 1000 } }
+      }
+    }
+  ],
+  "engine_note": "Чтобы узнать, какая общая мощность двигателя (в л.с.) вам нужна в конструкторе, умножьте планируемый вес танка (в тоннах) на желаемую удельную мощность (л.с./т) из первой таблицы."
+}
