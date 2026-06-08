@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Характеристики эпох — Sprocket</title>
-    <meta name="description" content="Характеристики эпох для Sprocket — рекомендованные веса, удельная мощность, броня и вооружение по классам танков.">
+    <meta name="description" content="Характеристики эпох для Sprocket — рекомендованные веса, удельная мощность, броня и вооружение по трем классам танков одновременно.">
 
-    <!-- Google Fonts async pattern -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.gstatic.com/s/materialicons/v145/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" as="style" onload="this.rel='stylesheet'">
@@ -14,6 +13,78 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
 
     <link href="../../assets/css/shared.css" rel="stylesheet">
+
+    <style>
+        /* Новые стили для грида карточек */
+        #infoCard {
+            /* По умолчанию в мобильной версии карточки идут в колонку */
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* На экранах шире 900px располагаем карточки в 3 колонки */
+        @media (min-width: 900px) {
+            #infoCard {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .tank-class-card {
+            background-color: var(--surface-light, #f8f9fa); /* Цвет поверхности из темы */
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease; /* Плавное переключение темы */
+        }
+
+        /* Стили для темной темы */
+        body.dark-theme .tank-class-card {
+            background-color: var(--surface-dark, #202124);
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--on-surface);
+        }
+
+        /* Заголовки секций внутри карточек */
+        .section-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+            .section-subtitle .material-icons {
+                font-size: 1.3rem;
+            }
+
+        /* Стили для строк данных */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-label {
+            color: var(--on-surface-variant);
+        }
+
+        .data-value {
+            font-weight: 500;
+            color: var(--on-surface);
+        }
+    </style>
 </head>
 <body>
     <header class="site-header">
@@ -54,50 +125,9 @@
                 <label for="epochSelect">Эпоха</label>
                 <select id="epochSelect" onchange="updateView()"></select>
             </div>
-            <div class="select-group">
-                <label for="classSelect">Класс танка</label>
-                <select id="classSelect" onchange="updateView()">
-                    <option value="light">Light (Лёгкий)</option>
-                    <option value="medium">Medium (Средний)</option>
-                    <option value="heavy">Heavy (Тяжёлый)</option>
-                </select>
-            </div>
         </div>
 
         <div id="infoCard" class="info-card">
-
-            <div class="section-title"><span class="material-icons">fitness_center</span> Вес и Мощность</div>
-            <table>
-                <tr>
-                    <td class="label-cell">Рекомендуемый вес</td>
-                    <td class="value-cell" id="weightVal">-</td>
-                </tr>
-                <tr>
-                    <td class="label-cell">Удельная мощность</td>
-                    <td class="value-cell" id="powerVal">-</td>
-                </tr>
-            </table>
-
-            <div class="section-title"><span class="material-icons">shield</span> Бронирование корпуса (мм)</div>
-            <table>
-                <tr><td class="label-cell">Лобовая броня</td><td class="value-cell" id="hullFront">-</td></tr>
-                <tr><td class="label-cell">Бортовая броня</td><td class="value-cell" id="hullSide">-</td></tr>
-                <tr><td class="label-cell">Кормовая броня</td><td class="value-cell" id="hullRear">-</td></tr>
-            </table>
-
-            <div class="section-title"><span class="material-icons">shield</span> Бронирование башни (мм)</div>
-            <table>
-                <tr><td class="label-cell">Лобовая броня башни</td><td class="value-cell" id="turretFront">-</td></tr>
-                <tr><td class="label-cell">Бортовая броня башни</td><td class="value-cell" id="turretSide">-</td></tr>
-                <tr><td class="label-cell">Кормовая броня башни</td><td class="value-cell" id="turretRear">-</td></tr>
-            </table>
-
-            <div class="section-title"><span class="material-icons">colorize</span> Вооружение</div>
-            <table>
-                <tr><td class="label-cell">Калибр орудия</td><td class="value-cell" id="gunCaliber">-</td></tr>
-                <tr><td class="label-cell">Длина каморы</td><td class="value-cell" id="gunChamber">-</td></tr>
-            </table>
-
         </div>
 
         <div class="note-box">
@@ -109,9 +139,49 @@
 
     <script>
         let jsonData = null;
+        // Массив классов для перебора в JS
+        const tankClasses = ['light', 'medium', 'heavy'];
+        const classNames = {
+            'light': 'Light (Лёгкий)',
+            'medium': 'Medium (Средний)',
+            'heavy': 'Heavy (Тяжёлый)'
+        };
+
+        // Шаблон карточки класса (теперь без таблиц)
+        function createClassCardHTML(cls) {
+            return `
+                    <div class="tank-class-card" id="card-${cls}">
+                        <div class="card-header">${classNames[cls]}</div>
+
+                        <div class="section-subtitle"><span class="material-icons">fitness_center</span> Вес и Мощность</div>
+                        <div class="data-row"><span class="data-label">Рекомендуемый вес</span><span class="data-value" id="${cls}-weightVal">-</span></div>
+                        <div class="data-row"><span class="data-label">Удельная мощность</span><span class="data-value" id="${cls}-powerVal">-</span></div>
+
+                        <div class="section-subtitle"><span class="material-icons">shield</span> Бронирование корпуса (мм)</div>
+                        <div class="data-row"><span class="data-label">Лобовая</span><span class="data-value" id="${cls}-hullFront">-</span></div>
+                        <div class="data-row"><span class="data-label">Бортовая</span><span class="data-value" id="${cls}-hullSide">-</span></div>
+                        <div class="data-row"><span class="data-label">Кормовая</span><span class="data-value" id="${cls}-hullRear">-</span></div>
+
+                        <div class="section-subtitle"><span class="material-icons">shield</span> Бронирование башни (мм)</div>
+                        <div class="data-row"><span class="data-label">Лобовая</span><span class="data-value" id="${cls}-turretFront">-</span></div>
+                        <div class="data-row"><span class="data-label">Бортовая</span><span class="data-value" id="${cls}-turretSide">-</span></div>
+                        <div class="data-row"><span class="data-label">Кормовая</span><span class="data-value" id="${cls}-turretRear">-</span></div>
+
+                        <div class="section-subtitle"><span class="material-icons">colorize</span> Вооружение</div>
+                        <div class="data-row"><span class="data-label">Калибр</span><span class="data-value" id="${cls}-gunCaliber">-</span></div>
+                        <div class="data-row"><span class="data-label">Длина каморы</span><span class="data-value" id="${cls}-gunChamber">-</span></div>
+                    </div>
+                `;
+        }
 
         async function loadData() {
             try {
+                // Вставляем 3 шаблона карточек в контейнер сразу
+                const infoCardContainer = document.getElementById('infoCard');
+                tankClasses.forEach(cls => {
+                    infoCardContainer.innerHTML += createClassCardHTML(cls);
+                });
+
                 const response = await fetch('basedata.json');
                 jsonData = await response.json();
 
@@ -125,7 +195,7 @@
                     epochSelect.appendChild(opt);
                 });
 
-                document.getElementById('infoCard').style.display = 'block';
+                document.getElementById('infoCard').style.display = 'grid'; // Показываем грид
                 updateView();
             } catch (e) {
                 console.error("Ошибка загрузки:", e);
@@ -137,34 +207,41 @@
             if (!jsonData) return;
 
             const selectedEpochId = document.getElementById('epochSelect').value;
-            const selectedClass = document.getElementById('classSelect').value;
-
             const epoch = jsonData.epochs.find(e => e.id === selectedEpochId);
             if (!epoch) return;
 
-            const wp = epoch.weight_power[selectedClass];
-            const armor = epoch.armor_mm[selectedClass];
-            const guns = epoch.guns_mm[selectedClass];
+            // Проходимся циклом по каждому из трех классов танков
+            tankClasses.forEach(cls => {
+                const wp = epoch.weight_power[cls];
+                const armor = epoch.armor_mm[cls];
+                const guns = epoch.guns_mm[cls];
 
-            document.getElementById('weightVal').innerText = `${wp.weight_t.min} - ${wp.weight_t.max} т`;
-            document.getElementById('powerVal').innerText = `${wp.power_hp_per_t.min} - ${wp.power_hp_per_t.max} л.с./т`;
+                // Вес и мощность
+                document.getElementById(`${cls}-weightVal`).innerText = `${wp.weight_t.min} - ${wp.weight_t.max} т`;
+                document.getElementById(`${cls}-powerVal`).innerText = `${wp.power_hp_per_t.min} - ${wp.power_hp_per_t.max} л.с./т`;
 
-            document.getElementById('hullFront').innerText = `${armor.hull.front} мм`;
-            document.getElementById('hullSide').innerText = `${armor.hull.side} мм`;
-            document.getElementById('hullRear').innerText = `${armor.hull.rear} мм`;
+                // Броня корпуса
+                document.getElementById(`${cls}-hullFront`).innerText = `${armor.hull.front} мм`;
+                document.getElementById(`${cls}-hullSide`).innerText = `${armor.hull.side} мм`;
+                document.getElementById(`${cls}-hullRear`).innerText = `${armor.hull.rear} мм`;
 
-            if (armor.turret) {
-                document.getElementById('turretFront').innerText = `${armor.turret.front} мм`;
-                document.getElementById('turretSide').innerText = `${armor.turret.side} мм`;
-                document.getElementById('turretRear').innerText = `${armor.turret.rear} мм`;
-            } else {
-                document.getElementById('turretFront').innerText = "Отсутствует";
-                document.getElementById('turretSide').innerText = "Отсутствует";
-                document.getElementById('turretRear').innerText = "Отсутствует";
-            }
+                // Броня башни
+                if (armor.turret) {
+                    document.getElementById(`${cls}-turretFront`).innerText = `${armor.turret.front} мм`;
+                    document.getElementById(`${cls}-turretSide`).innerText = `${armor.turret.side} мм`;
+                    document.getElementById(`${cls}-turretRear`).innerText = `${armor.turret.rear} мм`;
+                } else {
+                    // Используем классы темы для "Отсутствует" (например, серый цвет)
+                    const placeholderHTML = `<span style="color: var(--on-surface-variant); font-style: italic; opacity: 0.7;">Отсутствует</span>`;
+                    document.getElementById(`${cls}-turretFront`).innerHTML = placeholderHTML;
+                    document.getElementById(`${cls}-turretSide`).innerHTML = placeholderHTML;
+                    document.getElementById(`${cls}-turretRear`).innerHTML = placeholderHTML;
+                }
 
-            document.getElementById('gunCaliber').innerText = `${guns.caliber.min} - ${guns.caliber.max} мм`;
-            document.getElementById('gunChamber').innerText = `${guns.chamber_length_mm.min} - ${guns.chamber_length_mm.max} мм`;
+                // Вооружение
+                document.getElementById(`${cls}-gunCaliber`).innerText = `${guns.caliber.min} - ${guns.caliber.max} мм`;
+                document.getElementById(`${cls}-gunChamber`).innerText = `${guns.chamber_length_mm.min} - ${guns.chamber_length_mm.max} мм`;
+            });
         }
 
         window.onload = loadData;

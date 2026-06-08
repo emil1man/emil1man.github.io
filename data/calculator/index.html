@@ -6,7 +6,6 @@
     <title>Калькулятор двигателя — Sprocket</title>
     <meta name="description" content="Калькулятор двигателя для Sprocket — подберите удельную мощность и массу танка, получите рекомендованный крутящий момент и объём.">
 
-    <!-- Google Fonts async pattern -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.gstatic.com/s/materialicons/v145/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" as="style" onload="this.rel='stylesheet'">
@@ -41,7 +40,7 @@
                     <span class="icon-chip material-icons" aria-hidden="true">favorite</span>
                     Поддержать автора
                 </a>
-                <button id="themeToggle" class="btn btn--tonal">
+                <button id="themeToggle" class="btn btn--tonal theme-btn-nav">
                     <span class="material-icons" id="themeIcon">dark_mode</span>
                 </button>
             </div>
@@ -69,6 +68,11 @@
             </div>
         </div>
 
+        <div id="powerWarning" class="warning-banner" style="display: none; background-color: rgba(255, 152, 0, 0.15); border-left: 4px solid #ff9800; padding: 12px; margin-bottom: 16px; border-radius: 4px; color: #ffb74d;">
+            <span class="material-icons" style="vertical-align: middle; margin-right: 8px;">warning</span>
+            <span id="warningText" style="vertical-align: middle;">Предупреждение</span>
+        </div>
+
         <div class="results-card">
             <div class="result-row">
                 <span class="result-label"><span class="material-icons">bolt</span> Рекомендуемое Torque:</span>
@@ -94,17 +98,18 @@
     <script>
         let jsonData = null;
 
+        // Встроенный фолбэк полностью синхронизирован со структурой нового JSON
         const fallbackEpochsData = [
-            { id: 'WW', label: 'WWI (Первая мировая)', maxCylinders: 6, deltaTorque: 46.00, hpPerTorque: 0.2, baseHp: 2.0 },
-            { id: 'IW', label: 'Interwar (Межвоенный)', maxCylinders: 12, deltaTorque: 66.33, hpPerTorque: 0.4, baseHp: 5.0 },
-            { id: 'EW', label: 'Earlywar (Ранняя ВМВ)', maxCylinders: 24, deltaTorque: 69.41, hpPerTorque: 0.467, baseHp: 7.33 },
-            { id: 'MW', label: 'Midwar (Середина ВМВ)', maxCylinders: 24, deltaTorque: 72.91, hpPerTorque: 0.567, baseHp: 9.33 },
-            { id: 'LW', label: 'Latewar (Конец ВМВ)', maxCylinders: 24, deltaTorque: 74.16, hpPerTorque: 0.667, baseHp: 9.33 }
+            { id: 'WW', label: 'WW1 (Первая мировая)', min_cylinders: 2, max_cylinders: 6, delta_torque: 46.00, inertial_A: 1500, RPM_min: 900, rpm_max_limit: 3200, C_base: 7272, C_loss: 30 },
+            { id: 'IW', label: 'Interwar (Межвоенный)', min_cylinders: 2, max_cylinders: 12, delta_torque: 66.3333, inertial_A: 2850, RPM_min: 1700, rpm_max_limit: 5900, C_base: 7430, C_loss: 10 },
+            { id: 'EW', label: 'Earlywar (Ранняя ВМВ)', min_cylinders: 2, max_cylinders: 24, delta_torque: 69.4167, inertial_A: 3600, RPM_min: 2100, rpm_max_limit: 7000, C_base: 7830, C_loss: 55 },
+            { id: 'MW', label: 'Midwar (Середина ВМВ)', min_cylinders: 2, max_cylinders: 24, delta_torque: 72.9167, inertial_A: 4400, RPM_min: 2600, rpm_max_limit: 8600, C_base: 8000, C_loss: 36 },
+            { id: 'LW', label: 'Latewar (Конец ВМВ)', min_cylinders: 2, max_cylinders: 24, delta_torque: 74.1667, inertial_A: 4800, RPM_min: 2800, rpm_max_limit: 9300, C_base: 8050, C_loss: 44 }
         ];
 
         async function loadData() {
             try {
-                const response = await fetch('data/lookup/index.json');
+                const response = await fetch('dTorque.json');
                 jsonData = await response.json();
 
                 const epochSelect = document.getElementById('epochSelect');
@@ -130,10 +135,14 @@
                 const opt = document.createElement('option');
                 opt.value = f.id;
                 opt.textContent = f.label;
-                opt.dataset.maxCyl = f.maxCylinders;
-                opt.dataset.deltaTorque = f.deltaTorque;
-                opt.dataset.hpPerTorque = f.hpPerTorque;
-                opt.dataset.baseHp = f.baseHp;
+                opt.dataset.minCyl = f.min_cylinders;
+                opt.dataset.maxCyl = f.max_cylinders;
+                opt.dataset.deltaTorque = f.delta_torque;
+                opt.dataset.inertialA = f.inertial_A;
+                opt.dataset.rpmMin = f.RPM_min;
+                opt.dataset.rpmMaxLimit = f.rpm_max_limit;
+                opt.dataset.cBase = f.C_base;
+                opt.dataset.cLoss = f.C_loss;
                 epochSelect.appendChild(opt);
             });
             calculate();
@@ -141,6 +150,8 @@
 
         function calculate() {
             const epochSelect = document.getElementById('epochSelect');
+            if (!epochSelect.value) return;
+
             const selectedEpochId = epochSelect.value;
 
             const hpt = parseFloat(document.getElementById('inputHPT').value);
@@ -164,69 +175,105 @@
                 return;
             }
 
-            let maxCylinders = 24;
-            let deltaTorque = 74.16;
-            let hpPerTorque = 0.667;
-            let baseHp = 9.33;
+            // Инициализация физических констант текущей эпохи
+            let minCylinders, maxCylinders, deltaTorque, inertialA, rpmMin, rpmMaxLimit, cBase, cLoss;
 
             if (jsonData) {
                 const epochData = jsonData.epochs.find(e => e.id === selectedEpochId);
+                minCylinders = epochData?.min_cylinders || 2;
                 maxCylinders = epochData?.max_cylinders || 24;
-                deltaTorque = epochData?.delta_torque || 74.16;
-                hpPerTorque = epochData?.hp_per_torque || 0.667;
-                baseHp = epochData?.base_hp || 9.33;
+                deltaTorque = epochData?.delta_torque || 74.1667;
+                inertialA = epochData?.inertial_A || 4800;
+                rpmMin = epochData?.RPM_min || 2800;
+                rpmMaxLimit = epochData?.rpm_max_limit || 9300;
+                cBase = epochData?.C_base || 8050;
+                cLoss = epochData?.C_loss || 44;
             } else {
                 const selectedOption = epochSelect.options[epochSelect.selectedIndex];
+                minCylinders = parseInt(selectedOption?.dataset?.minCyl) || 2;
                 maxCylinders = parseInt(selectedOption?.dataset?.maxCyl) || 24;
-                deltaTorque = parseFloat(selectedOption?.dataset?.deltaTorque) || 74.16;
-                hpPerTorque = parseFloat(selectedOption?.dataset?.hpPerTorque) || 0.667;
-                baseHp = parseFloat(selectedOption?.dataset?.baseHp) || 9.33;
+                deltaTorque = parseFloat(selectedOption?.dataset?.deltaTorque) || 74.1667;
+                inertialA = parseFloat(selectedOption?.dataset?.inertialA) || 4800;
+                rpmMin = parseFloat(selectedOption?.dataset?.rpmMin) || 2800;
+                rpmMaxLimit = parseFloat(selectedOption?.dataset?.rpmMaxLimit) || 9300;
+                cBase = parseFloat(selectedOption?.dataset?.cBase) || 8050;
+                cLoss = parseFloat(selectedOption?.dataset?.cLoss) || 44;
             }
 
             const requiredHP = mass * hpt;
-            let T_target = (requiredHP - baseHp) / hpPerTorque;
 
-            if (T_target < 2 * 0.1 * deltaTorque) {
-                T_target = 2 * 0.1 * deltaTorque;
+            // 1. Считаем абсолютный лимит мощности для этой эпохи (при макс. цилиндрах и объеме 5.0 л)
+            const maxTorquePossible = maxCylinders * 5.0 * deltaTorque;
+            const maxComputedRPM = inertialA / Math.cbrt(5.0);
+            let maxRPMPossible = Math.min(rpmMaxLimit, Math.max(rpmMin, maxComputedRPM));
+            maxRPMPossible = Math.max(rpmMin, maxRPMPossible - 150); // Учитываем апшифт
+
+            const maxPossibleHP = (maxTorquePossible * maxRPMPossible) / (cBase + (cLoss / 5.0));
+
+            // Управляем видимостью предупреждения
+            const warningBanner = document.getElementById('powerWarning');
+            const warningText = document.getElementById('warningText');
+
+            if (requiredHP > maxPossibleHP) {
+                const maxAchievableHPT = maxPossibleHP / mass;
+                warningText.innerText = `Внимание! В эпоху ${epochSelect.options[epochSelect.selectedIndex].text} невозможно достичь ${hpt} HP/t для танка весом ${mass} т. Максимальный мотор выдаст только ${maxPossibleHP.toFixed(0)} л.с. (~${maxAchievableHPT.toFixed(1)} HP/t).`;
+                warningBanner.style.display = 'block';
+            } else {
+                warningBanner.style.display = 'none';
             }
 
+            // 2. Запуск подбора конфигурации
             let bestN = maxCylinders;
-            let bestV = T_target / (bestN * deltaTorque);
-            bestV = Math.ceil(bestV * 100) / 100;
+            let bestV = 5.0;
+            let minDisplacement = Infinity;
+            let foundValidSolution = false;
 
-            if (bestV < 0.1) {
-                bestV = 0.1;
-                for (let n = maxCylinders; n >= 2; n -= 2) {
-                    let testTorque = Math.round((bestV * n * deltaTorque) / 10) * 10;
-                    let testHP = hpPerTorque * testTorque + baseHp;
+            for (let n = minCylinders; n <= maxCylinders; n += 2) {
+                for (let v = 0.1; v <= 5.0; v = Math.round((v + 0.01) * 100) / 100) {
 
-                    if (testHP >= requiredHP || n === 2) {
-                        bestN = n;
-                        break;
+                    const testTorque = n * v * deltaTorque;
+                    const computedRPM = inertialA / Math.cbrt(v);
+                    let testRPM = Math.min(rpmMaxLimit, Math.max(rpmMin, computedRPM));
+                    testRPM = Math.max(rpmMin, testRPM - 150); // Безопасный вычет апшифта строго после скобок
+
+                    const testHP = (testTorque * testRPM) / (cBase + (cLoss / v));
+
+                    if (testHP >= requiredHP) {
+                        const currentDisplacement = n * v;
+
+                        if (currentDisplacement < minDisplacement) {
+                            minDisplacement = currentDisplacement;
+                            bestN = n;
+                            bestV = v;
+                            foundValidSolution = true;
+                        }
+                        else if (Math.abs(currentDisplacement - minDisplacement) < 0.001 && n < bestN) {
+                            bestN = n;
+                            bestV = v;
+                        }
                     }
                 }
-            } else if (bestV > 5.0) {
-                bestV = 5.0;
-                bestN = maxCylinders;
             }
 
-            let bestTorque = Math.round((bestV * bestN * deltaTorque) / 10) * 10;
-
-            if (bestTorque === 0) {
+            // Если решение не нашли (запрос превышает лимит), принудительно выставляем макс. мотор
+            if (!foundValidSolution) {
                 bestN = maxCylinders;
                 bestV = 5.0;
-                bestTorque = Math.round((bestV * bestN * deltaTorque) / 10) * 10;
             }
 
+            // 3. Вывод результатов на экран
+            const finalTorqueRaw = bestN * bestV * deltaTorque;
+            const finalTorqueRounded = Math.round(finalTorqueRaw / 10) * 10;
             const finalDisplacement = bestN * bestV;
 
-            document.getElementById('outTorque').innerText = `${bestTorque} Нм`;
+            document.getElementById('outTorque').innerText = `${finalTorqueRounded} Нм`;
             document.getElementById('outDisplacement').innerText = `${finalDisplacement.toFixed(2)} л`;
             document.getElementById('outN').innerText = bestN;
             document.getElementById('outV').innerText = `${bestV.toFixed(2)} л`;
         }
 
         function clearResults() {
+            document.getElementById('powerWarning').style.display = 'none';
             document.getElementById('outTorque').innerText = "- Нм";
             document.getElementById('outDisplacement').innerText = "- л";
             document.getElementById('outN').innerText = "-";

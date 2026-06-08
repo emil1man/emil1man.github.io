@@ -1,4 +1,7 @@
-// theme.js
+// RU: Управление темой интерфейса. Сохраняет выбор пользователя в localStorage.
+// EN: UI theme management. Persists user preference to localStorage.
+// Purpose: Обеспечить согласованную тёмную/светлую тему на всех страницах.
+// Reason: улучшает доступность и пользовательский опыт.
 const themeToggleBtn = document.getElementById('themeToggle');
 const themeIcon = document.getElementById('themeIcon');
 
@@ -26,7 +29,6 @@ function initTheme() {
     }
 }
 
-// Проверяем, есть ли кнопка на этой конкретной странице
 if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
         const isDarkNow = document.body.classList.contains('dark-theme');
@@ -34,7 +36,6 @@ if (themeToggleBtn) {
     });
 }
 
-// Запускаем инициализацию темы
 window.addEventListener('DOMContentLoaded', () => {
     initTheme();
 });

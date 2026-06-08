@@ -1,5 +1,5 @@
 {
-  "engine_note": "delta_torque (k) используется для вычисления Torque = n * V * k. hp_per_torque и base_hp используются для расчета мощности: HP = (Torque * hp_per_torque) + base_hp.",
+  "engine_note": "Модель Sprocket v0.2+. Расчет: 1) Torque = n * V * delta_torque. 2) RPM_max = min(rpm_max_limit, max(RPM_min, inertial_A / V^(1/3))). 3) HP = (Torque * RPM_max) / (C_base + (C_loss / V)).",
   "epochs": [
     {
       "id": "WW",
@@ -7,6 +7,11 @@
       "min_cylinders": 2,
       "max_cylinders": 6,
       "delta_torque": 46.00,
+      "inertial_A": 1500,
+      "RPM_min": 900,
+      "rpm_max_limit": 3200,
+      "C_base": 7272,
+      "C_loss": 30,
       "hp_per_torque": 0.2,
       "base_hp": 2.0
     },
@@ -15,16 +20,26 @@
       "label": "Interwar (Межвоенный)",
       "min_cylinders": 2,
       "max_cylinders": 12,
-      "delta_torque": 66.33,
-      "hp_per_torque": 0.4,
-      "base_hp": 5.0
+      "delta_torque": 66.3333,
+      "inertial_A": 2850,
+      "RPM_min": 1700,
+      "rpm_max_limit": 5900,
+      "C_base": 7430,
+      "C_loss": 10,
+      "hp_per_torque": 0.27,
+      "base_hp": 43.0
     },
     {
       "id": "EW",
       "label": "Earlywar (Ранняя ВМВ)",
       "min_cylinders": 2,
       "max_cylinders": 24,
-      "delta_torque": 69.41,
+      "delta_torque": 69.4167,
+      "inertial_A": 3600,
+      "RPM_min": 2100,
+      "rpm_max_limit": 7000,
+      "C_base": 7830,
+      "C_loss": 55,
       "hp_per_torque": 0.467,
       "base_hp": 7.33
     },
@@ -33,7 +48,12 @@
       "label": "Midwar (Середина ВМВ)",
       "min_cylinders": 2,
       "max_cylinders": 24,
-      "delta_torque": 72.91,
+      "delta_torque": 72.9167,
+      "inertial_A": 4400,
+      "RPM_min": 2600,
+      "rpm_max_limit": 8600,
+      "C_base": 8000,
+      "C_loss": 36,
       "hp_per_torque": 0.567,
       "base_hp": 9.33
     },
@@ -42,7 +62,12 @@
       "label": "Latewar (Конец ВМВ)",
       "min_cylinders": 2,
       "max_cylinders": 24,
-      "delta_torque": 74.16,
+      "delta_torque": 74.1667,
+      "inertial_A": 4800,
+      "RPM_min": 2800,
+      "rpm_max_limit": 9300,
+      "C_base": 8050,
+      "C_loss": 44,
       "hp_per_torque": 0.667,
       "base_hp": 9.33
     }

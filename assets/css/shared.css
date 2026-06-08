@@ -1,41 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-
 :root {
-    --md-sys-color-background: #fef7ff;
-    --md-sys-color-on-background: #1d1b20;
-    --md-sys-color-surface: #f7f2fa;
-    --md-sys-color-surface-variant: #e7e0ec;
-    --md-sys-color-surface-container: #ece6f0;
-    --md-sys-color-on-surface: #1d1b20;
-    --md-sys-color-on-surface-variant: #49454f;
-    --md-sys-color-primary: #6750a4;
+    --md-sys-color-background: #ffffff; /* Идеально белый фон */
+    --md-sys-color-on-background: #000000; /* Глубокий черный текст */
+    /* Карточка — светло-серый, чтобы она выделялась на белом фоне */
+    --md-sys-color-surface: #f2f2f7;
+    /* Кнопки — четко контрастный серый */
+    --md-sys-color-surface-variant: #e5e5ea;
+    /* Таблицы — чуть темнее для глубины */
+    --md-sys-color-surface-container: #dcdce6;
+    --md-sys-color-on-surface: #000000;
+    --md-sys-color-on-surface-variant: #3a3a3c;
+    /* Акцент — абсолютный черный */
+    --md-sys-color-primary: #000000;
     --md-sys-color-on-primary: #ffffff;
-    --md-sys-color-outline: #79747e;
-    --md-sys-color-outline-variant: #c4c6d0;
-    --md-sys-color-error: #b3261e;
-    --md-elevation-1: 0px 1px 3px 1px rgba(0,0,0,0.15),0px 1px 2px 0px rgba(0,0,0,0.3);
-    --md-elevation-2: 0px 2px 6px 2px rgba(0,0,0,0.15),0px 1px 2px 0px rgba(0,0,0,0.3);
+    /* Четкие границы, чтобы элемент "читался" */
+    --md-sys-color-outline: #c6c6c8;
 }
 
-/* Переменные для ТЕМНОЙ ТЕМЫ */
+/* Вставить в body.dark-theme (Ультимативный TRUE OLED MODE) */
 body.dark-theme {
-    --md-sys-color-background: #141218; /* Глубокий темный фон */
-    --md-sys-color-on-background: #e6e1e5; /* Белый текст на темном фоне */
-    --md-sys-color-surface: #211f26; /* Фон карточек на главной */
-    --md-sys-color-surface-variant: #49454f; /* Фон тональных кнопок */
-    --md-sys-color-surface-container: #1d1b20; /* Фон таблиц результатов */
-    --md-sys-color-on-surface: #e6e1e5;
-    --md-sys-color-on-surface-variant: #cac4d0; /* Второстепенный текст */
-    --md-sys-color-primary: #d0bcff; /* Светло-фиолетовый акцент (Material 3 Dark) */
-    --md-sys-color-on-primary: #381e72; /* Текст внутри главных кнопок */
-    --md-sys-color-outline: #938f99;
-    --md-sys-color-outline-variant: #49454f;
-    /* Слегка приглушаем тени в темной теме, чтобы они не выглядели грязно */
-    --md-elevation-1: 0px 1px 3px 1px rgba(0,0,0,0.4), 0px 1px 2px 0px rgba(0,0,0,0.5);
-    --md-elevation-2: 0px 2px 6px 2px rgba(0,0,0,0.4), 0px 1px 2px 0px rgba(0,0,0,0.5);
+    --md-sys-color-background: #000000; /* Пиксели ВЫКЛЮЧЕНЫ. Физический черный цвет */
+    --md-sys-color-on-background: #ffffff; /* Идеально белый читаемый текст */
+    /* Карточка — очень темное железо. Она не сливается с фоном, но границы будут четкими */
+    --md-sys-color-surface: #0d0e10;
+    /* Кнопки — графитовые плиты, которые отчетливо видно на карточке */
+    --md-sys-color-surface-variant: #1c1d22;
+    /* Внутренние таблицы на страницах эпох */
+    --md-sys-color-surface-container: #050607;
+    --md-sys-color-on-surface: #ffffff;
+    --md-sys-color-on-surface-variant: #9ea2aa; /* Комфортный серый текст на кнопках */
+    /* Главные акцентные кнопки (например, Главная или Поддержать) */
+    --md-sys-color-primary: #ffffff;
+    --md-sys-color-on-primary: #000000;
+    /* Тонкие рамки и разделители */
+    --md-sys-color-outline: #2d3037;
+    /* Для OLED тени не нужны (черное на черном не отбрасывает тень), */
+    /* поэтому мы заменяем тень на едва заметную аккуратную рамку вокруг карточки */
+    --md-elevation-1: 0px 0px 0px 1px #1c1d22;
 }
-
 /* Reset */
 * {
     box-sizing: border-box;
@@ -54,8 +57,9 @@ body.dark-theme {
 
 .page-container {
     padding: 24px;
-    max-width: 900px;
-    margin: 0 auto
+    width: 80%; /* Занимает 96% от ширины любого экрана */
+    max-width: 100%; /* Убираем жесткий лимит в пикселях */
+    margin: 0 auto;
 }
 
     /* Scoped header for pages that should match скриншот */
@@ -505,7 +509,9 @@ tr:last-child td {
 
 .label-cell {
     color: var(--md-sys-color-on-surface-variant);
-    width: 55%
+    text-align: left;
+    width: 75%; /* Увеличили до 75%, чтобы значения держались ближе к центру на широких экранах */
+    padding-right: 10px;
 }
 
 .value-cell {
